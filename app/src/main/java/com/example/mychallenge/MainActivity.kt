@@ -46,10 +46,25 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    searchExpenses(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+        })
+
         searchView.setOnCloseListener {
             Log.i("View", "response: CLOSE!")
-            false
+            true
         }
+
+
 
         getMovieData { movies : List<Movie> ->
             rv_movies_list.adapter = MovieAdapter(movies)
@@ -77,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 
     fun search(query: String): List<Movie> {
         if (query.isBlank())
-            return emptyList()
+            return moviesList;
 
         return moviesList.filter { movie ->
             val regex = query.toRegex(RegexOption.IGNORE_CASE)
